@@ -15,5 +15,7 @@ router.get('/data', (req, res) => {
 })
 
 router.post("/signup", usersController.signup)
+router.get("/id/:id", usersController.getUserById)
+router.get("/getAll", usersController.getAllUsers)
 
 module.exports = router;
