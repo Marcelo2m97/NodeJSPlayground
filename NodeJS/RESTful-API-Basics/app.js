@@ -14,6 +14,17 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+app.use((req, res, next) => {
+    req.headers.message = "He modificado la request."
+    const { authorization } = req.headers
+    if(!authorization) {
+        return res.status(403).json({
+            message: "Esta es una zona prohibida"
+        })
+    }
+    next()
+})
+
 app.use('/', indexRouter);
 app.use('/api', apiRouter);
 

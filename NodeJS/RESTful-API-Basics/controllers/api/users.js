@@ -1,3 +1,5 @@
+const { request } = require("../../app");
+
 const controller = {}
 const data = [
 	"Marcelo",
@@ -78,6 +80,7 @@ controller.getUserById = (req, res) => {
 }
 
 controller.getAllUsers = (req, res) => {
+    console.log(req.headers.message)
     const { page = 1, limit = 10 } = req.query
     const pageParsed = parseInt(page)
     const limitParsed = parseInt(limit)
