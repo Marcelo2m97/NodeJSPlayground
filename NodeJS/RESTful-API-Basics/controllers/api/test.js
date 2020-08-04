@@ -48,4 +48,34 @@ controller.statusTest2 = (req, res) => {
     }
 }
 
+controller.getMethod = (req, res) => {
+    res.status(200).json({
+        message: "Método GET"
+    })
+}
+
+controller.postMethod = (req, res) => {
+    res.status(200).json({
+        message: "Método POST"
+    })
+}
+
+controller.putMethod = (req, res) => {
+    res.status(200).json({
+        message: "Método PUT"
+    })
+}
+
+controller.patchMethod = (req, res) => {
+    res.status(200).json({
+        message: "Método PATCH"
+    })
+}
+
+controller.deleteMethod = (req, res) => {
+    res.status(200).json({
+        message: "Método DELETE"
+    })
+}
+
 module.exports = controller
