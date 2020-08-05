@@ -12,6 +12,16 @@ const PostSchema = new Schema({
         type: Number,
         default: 0,
     },
+    history: {
+        type: [{
+            title: String,
+            description: String,
+            image: String,
+            modifiedAt: Date
+        }],
+        default: []
+
+    },
     user: {
         type: String,
         required: true,
@@ -20,4 +30,4 @@ const PostSchema = new Schema({
     timestamps: true
 });
 
-module.exports = mongoose.model("Post", PostSchema)
+module.exports = mongoose.model("Post", PostSchema);

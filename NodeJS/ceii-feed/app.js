@@ -4,9 +4,11 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 
 var indexRouter = require('./routes/index');
-var apiRouter = require('./routes/api');
+const apiRouter = require('./routes/api');
 
 const { connect } = require("./config/database")
+
+connect();
 
 var app = express();
 
