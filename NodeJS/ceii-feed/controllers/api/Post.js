@@ -1,6 +1,8 @@
 const PostService = require("../../services/Post");
-const { verifyID } = require("../../utils/MongoUtils");
+const { verifyId } = require("../../utils/MongoUtils");
+const { verifyTypeNumber } = require("../../utils/MiscUtils")
 const post = require("../../models/Post");
+const express = require("express");
 
 const controller = {};
 
@@ -27,7 +29,7 @@ controller.create = async (req, res) => {
 
 controller.findOneById = async (req, res) => {
     const { _id } = req.params;
-    if(!verifyID(_id)){
+    if(!verifyId(_id)){
         return res.status(400).json({
             error: "Error in ID"
         })
@@ -43,6 +45,56 @@ controller.findOneById = async (req, res) => {
         return res.status(500).json(
             {error: error.message}
         )
+    }
+}
+
+controller.findAll = async (req, res) => {
+    const { page = 0, limit = 10 } = req.query;
+    
+    if(!verifyTypeNumber(page, limit)){
+        return res.status(400).json({
+            message: "Mistype in query"
+        })
+    }
+
+    try{
+
+        const postsResponse = await PostService.findAll(parseInt(page), parseInt(limit));
+        return res.status(200).json(postsResponse.content);
+
+    } catch(error) {
+        return res.status(500).json({
+            message: error.message
+        })
+    }
+}
+
+controller.addLike = async (req, res) => {
+    const { _id } = req.body;
+    
+    if(!verifyId(_id)) {
+        return res.status(400).json({
+            message: "Error in Id"
+        });
+    }
+
+    try {
+        const postExists = await PostService.findOneById(_id);
+        if(!postExists.success) {
+            return res.status(404).json(postExists.content);
+        }
+
+        const likeAdded = await PostService.addLike(postExists.content);
+        if(!likeAdded.success) {
+            return res.status(409).json(likeAdded.content);
+        }
+        
+        return res.status(200).json(likeAdded.content)
+        
+    } catch(error) {
+        return res.status(500).json({
+            message: error.message
+        })
     }
 }
 

@@ -101,4 +101,62 @@ service.findOneById = async (_id) => {
     }
 }
 
+service.findAll = async (page, limit) => {
+    let serviceResponse = {
+        success: true,
+        content: {
+            message: "Found!"
+        }
+    }
+    
+    try {
+        const posts = await PostModel.find({}, undefined, {
+            skip: page * limit,
+            limit: limit,
+            sort: [{
+                updatedAt: -1
+            }]
+        }).exec();
+
+        serviceResponse.content = {
+            posts,
+            count: posts.length,
+            page,
+            limit
+        };
+
+        return serviceResponse;
+
+    } catch (error) {
+        throw new Error("Internal Server error");
+    }
+}
+
+service.addLike = async(post) => {
+    let serviceResponse = {
+        success: true,
+        content: {
+            message: "Post liked!"
+        }
+    }
+
+    try{
+        post.likes += 1;
+        postUpdated = await post.save();
+
+        if(!postUpdated) {
+            serviceResponse = {
+                success: false,
+                content: {
+                    message: "Post not liked!"
+                }
+            }
+        }
+
+        return serviceResponse;
+    } catch(error) {
+        throw new Error("Internal Server Error")
+    }
+}
+
 module.exports = service;
