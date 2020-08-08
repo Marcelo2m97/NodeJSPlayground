@@ -22,7 +22,7 @@ controller.create = async (req, res) => {
         return res.status(201).json(createPost.content)
     }catch(error){
         return res.status(500).json({
-            error: error.message
+            message: "Internal Server Error"
         })
     }
 }
@@ -42,9 +42,9 @@ controller.findOneById = async (req, res) => {
         }
         return res.status(200).json(postExists.content)
     } catch(error) {
-        return res.status(500).json(
-            {error: error.message}
-        )
+        return res.status(500).json({
+            message: "Internal Server Error"
+        });
     }
 }
 
