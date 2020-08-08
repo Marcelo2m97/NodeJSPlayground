@@ -1,4 +1,5 @@
 const PostModel = require('../models/Post')
+const debug = require("debug")("log");
 
 const service = {}
 
@@ -18,6 +19,32 @@ service.verifyCreateFields = ({ title, description, image, user }) => {
         }
         return serviceResponse;
     }
+
+    return serviceResponse;
+}
+
+service.verifyUpdateFields = ({ title, description, image }) => {
+    serviceResponse = {
+        success: true,
+        content: {}
+    }
+
+    if(!title && !description && !image){
+        serviceResponse = {
+            success: false,
+            content: {
+                message: "No changes to make."
+            }
+        }
+        return serviceResponse
+    }
+
+    if(title)
+        serviceResponse.content.title = title;
+    if(description)
+        serviceResponse.content.description = description;
+    if(image)
+        serviceResponse.content.image = image;
 
     return serviceResponse;
 }
@@ -132,7 +159,7 @@ service.findAll = async (page, limit) => {
     }
 }
 
-service.addLike = async(post) => {
+service.addLike = async (post) => {
     let serviceResponse = {
         success: true,
         content: {
@@ -156,6 +183,70 @@ service.addLike = async(post) => {
         return serviceResponse;
     } catch(error) {
         throw new Error("Internal Server Error")
+    }
+}
+
+service.updateOneById = async (post, contentToUpdate) => {
+    let serviceResponse = {
+        success: true,
+        content: {
+            message: "Post updated!"
+        }
+    }
+
+    try {
+        const updatedPost = await PostModel.findByIdAndUpdate(post._id, {
+            ...contentToUpdate,
+            $push: {
+                history: {
+                    title: post.title,
+                    description: post.description,
+                    image: post.image,
+                    modifiedAt: new Date()
+                }
+            }
+        });
+
+        if(!updatedPost) {
+            serviceResponse = {
+                success: false,
+                content: {
+                    message: "Post not updated!"
+                }
+            };
+        }
+
+        return serviceResponse;
+
+    } catch (error) {
+        throw new Error("Internal Server Error")
+    }
+}
+
+service.deleteOneById = async ( _id )  => {
+    const serviceResponse = {
+        success: true,
+        content: {
+            message: "Post deleted!"
+        }
+    }
+
+    try {
+        const postDeleted = await PostModel.findByIdAndDelete(_id).exec()
+
+        if(!postDeleted) {
+            serviceResponse = {
+                success: false,
+                content: {
+                    message: "Post not deleted!"
+                }
+            }
+        }
+
+        return serviceResponse;
+    } catch(error) {
+        debug(error)
+        throw new Error ("Internal Server Error")
     }
 }
 

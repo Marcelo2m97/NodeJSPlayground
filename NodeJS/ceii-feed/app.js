@@ -8,6 +8,8 @@ const apiRouter = require('./routes/api');
 
 const { connect } = require("./config/database")
 
+const debug = require("debug")("log")
+
 connect();
 
 var app = express();
